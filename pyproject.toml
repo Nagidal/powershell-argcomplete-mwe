@@ -106,7 +106,7 @@ exclude_lines = [
 
 [tool.towncrier]
 name = "Powershell Argument Completion, Minimal Working Example"
-package = "powershell-argcomplete-mwe"
+package = "powershell_argcomplete_mwe"
 package_dir = "src"
 directory = "changelog.d"
 filename = "CHANGELOG.md"
