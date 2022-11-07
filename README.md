@@ -22,8 +22,8 @@ functionality in `PowerShell`.
 - Start a new PowerShell window.
 - Clone this project.
 - Create and activate your Python virtual environment as you like.
-- Enter into this project's directory (`cd powershell-argcomplete`)
-- `pip install -e .`
+- Enter into this project's directory (`cd powershell-argcomplete-mwe`)
+- `pip install --editable .`
 - Activate PowerShell tab completion with either of the scripts:
     - Dot-sourcing: `. .\psamwe.complete.ps1`
     - Import module: `Import-Module .\psamwe.complete.psm1`
@@ -87,9 +87,9 @@ New-Item -Path Env: -Name _ARGCOMPLETE_POWERSHELL -Value 1 | Out-Null
 This environment variable is used in `psamwe.py`:
 
 ```python
-output_stream=None
+output_stream = None
 if "_ARGCOMPLETE_POWERSHELL" in os.environ:
-    output_stream = sys.stdout.buffer
+    output_stream = codecs.getwriter("utf-8")(sys.stdout.buffer)
 argcomplete.autocomplete(parser, output_stream=output_stream)
 ```
 
