@@ -1,0 +1,143 @@
+[build-system]
+requires = [
+    "hatchling>=1.8.0",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "powershell-argcomplete-mwe"
+description = "Powershell argument completion with argcomplete, minimal working example"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Sven Siegmund", email = "sven.siegmund@gmail.com" },
+    { name = "Tibor Takacs", email = "takacs84@gmail.com" },
+]
+
+keywords = [
+    "argument completion",
+    "cli",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    #"Development Status :: 4 - Beta",
+    #"Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.9",
+    "Operating System :: Microsoft :: Windows",
+]
+
+dependencies = [
+    "argcomplete",
+]
+
+dynamic = [
+    "version",
+]
+
+[project.urls]
+Homepage = "https://github.com/Nagidal/powershell-argcomplete-mwe"
+
+[project.scripts]
+psamwe = "powershell_argcomplete_mwe.cli:main"
+
+[tool.hatch.version]
+path = "src/powershell_argcomplete_mwe/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "behave",
+    "pytest",
+    "pytest-cov",
+    "wheel",
+    "semver",
+    "towncrier",
+]
+
+[tool.hatch.envs.default.scripts]
+cov = "pytest -v --cov-report=term-missing --cov-config=pyproject.toml --cov=src/powershell-argcomplete-mwe --cov=tests"
+no-cov = "cov --no-cov"
+integrate = "behave ./features"
+
+[tool.hatch.envs.style]
+dependencies = [
+    "black",
+    "isort",
+]
+
+[tool.hatch.envs.style.scripts]
+fmt = [
+    "isort .",
+    "black .",
+]
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "pdoc3"
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "pdoc --html --output-dir docs powershell-argcomplete-mwe"
+serve = "pdoc --http : powershell-argcomplete-mwe"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["39", "310"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  #"src/powershell-argcomplete-mwe/__about__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.black]
+    line-length = 102
+
+[tool.towncrier]
+name = "Claws"
+package = "powershell-argcomplete-mwe"
+package_dir = "src"
+directory = "changelog.d"
+filename = "CHANGELOG.md"
+start_string = "<!-- towncrier release notes start -->\n"
+underlines = ["", "", ""]
+template = "changelog.d/changelog_template.jinja"
+title_format = "## [{version}](https://github.com/Nagidal/powershell-argcomplete-mwe/tree/{version}) - {project_date}"
+issue_format = "[#{issue}](https://github.com/Nagidal/powershell-argcomplete-mwe/issues/{issue})"
+orphan_prefix = "+"
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "New Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "improved"
+name = "Improvements"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Bugfixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "detail"
+name = "Development Details"
+showcontent = true

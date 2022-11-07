@@ -8,28 +8,27 @@ tcsh with limited support).  [`PowerShell`](https://github.com/PowerShell/PowerS
 has also a great command-line interface, but the `argcomplete`-based applications cannot
 use its tab completion functionality.
 
-**This project provides a straightforward solution how to use `argcomplete` tab completion
-functionality in `PowerShell`.**
+This project provides a straightforward solution how to use `argcomplete` tab completion
+functionality in `PowerShell`.
 
 ## Content
 
-* **`mat.py`**.  Example script with `argcomplete`.
-* **`mat.complete.ps1`**.  Script to register `mat` command for tab completion.
-* **`mat.complete.psm1`**.  Module to register `mat` command for tab completion.
+- `psamwe.py` Example script with `argcomplete`.
+- `psamwe.complete.ps1`  Script to register `psamwe` command for tab completion.
+- `psamwe.complete.psm1`  Module to register `psamwe` command for tab completion.
 
 ## How to use the example?
 
-* Start a new PowerShell window.
-* Clone this project.
-* Create and activate your Python3 virtual environment as you like.
-* Enter into this project's directory (`cd powershell-argcomplete`)
-* Install `argparse` and `argcomplete`.
-* Test `mat.py` by calling `python .\mat.py`
-* Activate PowerShell tab completion with either of the scripts:
-    * Dot-sourcing: `. .\mat.complete.ps1`
-    * Import module: `Import-Module .\mat.complete.psm1`
-* Run `mat`
-* Play with `Tab` or `Ctrl+Space` auto-completion of `mat`.
+- Start a new PowerShell window.
+- Clone this project.
+- Create and activate your Python virtual environment as you like.
+- Enter into this project's directory (`cd powershell-argcomplete`)
+- `pip install -e .`
+- Activate PowerShell tab completion with either of the scripts:
+    - Dot-sourcing: `. .\psamwe.complete.ps1`
+    - Import module: `Import-Module .\psamwe.complete.psm1`
+- Type `psamwe `
+- Play with `Tab` or `Ctrl+Space` auto-completion of `psamwe`
 
 ## Background
 
@@ -42,11 +41,11 @@ function which wraps the original command:
 1. A PowerShell function is defined which is a simple alias of the original command:
 
 ```powershell
-$MatPythonCommand = "&'python .\mat.py'"
-$MatCommandAlias = "mat"
+$PsamwePythonCommand = "&'python .\psamwe.py'"
+$PsamweCommandAlias = "psamwe"
 
-Function mat {
-    Invoke-Expression "$MatPythonCommand $args"
+Function psamwe {
+    Invoke-Expression "$PsamwePythonCommand $args"
 }
 ```
 
@@ -54,13 +53,13 @@ Function mat {
 completion:
 
 ```powershell
-Register-ArgumentCompleter -Native -CommandName $MatCommandAlias -ScriptBlock $MatArgCompleteScriptBlock
+Register-ArgumentCompleter -Native -CommandName $PsamweCommandAlias -ScriptBlock $PsamweArgCompleteScriptBlock
 ```
 
-`$MatArgCompleteScriptBlock` script block is called by activating argument completion
+`$PsamweArgCompleteScriptBlock` script block is called by activating argument completion
 (by pressing `Tab` or `Ctrl+Space`)
 
-3. `$MatArgCompleteScriptBlock` script block mimics bash by setting up special environment
+3. `$PsamweArgCompleteScriptBlock` script block mimics bash by setting up special environment
 variables on a similiar way:
 
 ```powershell
@@ -76,7 +75,7 @@ New-Item -Path Env: -Name COMP_LINE -Value $line | Out-Null # Current line
 `argcomplete` uses these variables as input to determine the completion suggestions.
 
 4. `argcomplete` writes the result into an output stream.  Per default, it uses file
-descriptor `8` which is not supported by Powershell.  Instead, `mat.py` scripts changes
+descriptor `8` which is not supported by Powershell.  Instead, `psamwe.py` scripts changes
 the output stream to `stdout`.  However, this change would break the bash experience.
 Therefore, a new environment variable has been introduced to specify that the completion
 is triggered by PowerShell:
@@ -85,7 +84,7 @@ is triggered by PowerShell:
 New-Item -Path Env: -Name _ARGCOMPLETE_POWERSHELL -Value 1 | Out-Null
 ```
 
-This environment variable is used in `mat.py`:
+This environment variable is used in `psamwe.py`:
 
 ```python
 output_stream=None
@@ -101,7 +100,7 @@ separated lines are the results of argument completion which are presented by th
 command-line window to the user:
 
 ```powershell
-Invoke-Expression $MatPythonCommand -OutVariable completionResult -ErrorVariable errorOut -ErrorAction SilentlyContinue | Out-Null
+Invoke-Expression $PsamwePythonCommand -OutVariable completionResult -ErrorVariable errorOut -ErrorAction SilentlyContinue | Out-Null
 ...
 $items = $completionResult.Split()
 if ($items -eq $completionResult) {

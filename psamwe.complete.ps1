@@ -1,11 +1,11 @@
-$MatPythonCommand = "python .\mat.py"
-$MatCommandAlias = "mat"
+$PsamwePythonCommand = "psamwe.exe"
+$PsamweCommandAlias = "psamwe"
 
-Function mat {
-    Invoke-Expression "$MatPythonCommand $args"
+Function psamwe {
+    Invoke-Expression "$PsamwePythonCommand $args"
 }
 
-$MatArgCompleteScriptBlock = {
+$PsamweArgCompleteScriptBlock = {
     param($wordToComplete, $commandAst, $cursorPosition)
 
     # In case of scripts, this object hold the current line after string conversion
@@ -22,6 +22,7 @@ $MatArgCompleteScriptBlock = {
 
     # Mock bash with environment variable settings
     New-Item -Path Env: -Name _ARGCOMPLETE -Value 1 | Out-Null # Enables tab complition in argcomplete
+    #New-Item -Path Env: -Name _ARC_DEBUG -Value 1 | Out-Null # Enables debugging
     New-Item -Path Env: -Name COMP_TYPE -Value 9 | Out-Null # Constant
     New-Item -Path Env: -Name _ARGCOMPLETE_IFS -Value " " | Out-Null # Separator of the items
     New-Item -Path Env: -Name _ARGCOMPLETE_SUPPRESS_SPACE -Value 1 | Out-Null # Constant
@@ -35,10 +36,12 @@ $MatArgCompleteScriptBlock = {
     # Just call the script without any parameter
     # Since the environment variables are set, the argcomplete.autocomplete(...) function will be executed.
     # The result will be printed on the standard output (see the details in the Python file).
-    Invoke-Expression $MatPythonCommand -OutVariable completionResult -ErrorVariable errorOut -ErrorAction SilentlyContinue | Out-Null
+    Write-Verbose "Executing Argcomplete"
+    Invoke-Expression $PsamwePythonCommand -OutVariable completionResult -ErrorVariable errorOut -ErrorAction SilentlyContinue | Out-Null
 
     # Delete environment variables
     Remove-Item Env:\_ARGCOMPLETE | Out-Null
+    #Remove-Item Env:\_ARC_DEBUG | Out-Null # Disables debugging
     Remove-Item Env:\COMP_TYPE | Out-Null
     Remove-Item Env:\_ARGCOMPLETE_IFS | Out-Null
     Remove-Item Env:\_ARGCOMPLETE_SUPPRESS_SPACE | Out-Null
@@ -58,10 +61,9 @@ $MatArgCompleteScriptBlock = {
     else {
         $items
     }
+    Write-Verbose "End of Argcomplete"
 }
 
 # Register tab completion for the mat command
-Register-ArgumentCompleter -Native -CommandName $MatCommandAlias -ScriptBlock $MatArgCompleteScriptBlock
+Register-ArgumentCompleter -Native -CommandName $PsamweCommandAlias -ScriptBlock $PsamweArgCompleteScriptBlock
 
-# Export
-Export-ModuleMember -Function mat
