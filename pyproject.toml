@@ -105,7 +105,7 @@ exclude_lines = [
     line-length = 102
 
 [tool.towncrier]
-name = "Claws"
+name = "Powershell Argument Completion, Minimal Working Example"
 package = "powershell-argcomplete-mwe"
 package_dir = "src"
 directory = "changelog.d"
